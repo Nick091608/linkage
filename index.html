@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	
+<style>
+    .container{
+        font-size:0px;
+    }
+    .select{
+        display: block;
+		float: left;
+        position: relative;
+    }
+    input{
+        height:30px;
+        border-radius: 3px;
+        border: solid 1px #000;
+        -moz-appearance: none;
+        text-align: center;
+        cursor:pointer;
+    }
+    .list{
+        position: absolute;
+        top:35px;
+    }
+    #province{
+        width:150px;
+    }
+    #city{
+        width:150px;
+    }
+    #area{
+        width:150px;
+    }
+    
+    ul{ 
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        max-height:200px;
+        overflow: auto;
+        cursor:pointer;
+        background: white;
+        display: none;
+        border:1px solid #e6e6e8;
+        font-size: 14px;
+    }
+    #c1{
+        width:150px;
+        text-align:center;
+    }
+    #c1 li{
+        margin:5px auto;
+    }
+    #c2{
+        width:150px;
+        text-align:center;
+    }
+    #c2 li{
+        margin:5px auto;
+    }
+    #c3{
+        width:150px;
+        text-align:center;
+    }
+    #c3 li{
+        margin:5px auto;
+    }
+</style>
+
+<body>
+	<div class="container">
+		<div class="select">
+			<input type="text" id="province" name="Province"  placeholder="请选择省" readonly>
+			<div class="list">
+				<ul id="c1"></ul>
+			</div>
+		</div>
+		<div class="select">
+			<input type="text" id="city" name="City" placeholder="请选择市" readonly>
+			<div class="list">
+				<ul id="c2"></ul>
+			</div>
+		</div>
+		<div class="select">
+			<input type="text" id="area" name="Area" placeholder="请选择区" readonly>
+			<div class="list">
+				<ul id="c3"></ul>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="js/city.min.js"></script>
+<script>
+    var $li1='';
+    var $li2='';
+    var $li3='';
+    var city;
+    var area;
+    $.each(provinceList,function (i,val) {
+        $li1+="<li obj='"+i+"'>"+val.name+"</li>";
+    });
+    $("#c1").append($($li1));
+	  $("#c1").show();
+    $("#province").click(function(){
+        $("#c1").show();
+        $("#c2").show();
+        $("#c3").show(); 
+    });
+    $("#province").change(function(){
+        $("#city").val("");
+        $("#area").val("");
+    })
+    $("#city").click(function () {        
+        $("#c2").show();
+        $("#c1").show();
+        $("#c3").show();
+    });
+    $("#city").change(function(){
+        $("#area").val("");
+    })
+    $("#area").click(function () {
+        $("#c1,#c2,#c3").hide();
+    });
+ 
+    $("#c1").on("click","li",function(){
+        var i=$(this).attr("obj");
+        city= provinceList[i].cityList;
+        //取得值
+        //alert(provinceList[i].name,city[0].name);
+        var text=$(this).text();
+        if(text!=$("#province").val()){
+            $("#province").val(text);
+            //$("#c1").hide();
+            $("#c2").empty();
+            $li2="";
+            //添加节点
+            $.each(city,function (i,val) {
+                $li2+="<li obj='"+i+"'>"+val.name+"</li>";
+            });
+            $("#c2").append($($li2));
+            $("#c2").show();
+            $("#province").trigger("change");
+        }else{
+             $("#c1").hide();
+        }
+        
+       
+       
+    });
+    $("#c2").on("click","li",function(){
+        var i=$(this).attr("obj");
+        area=city[i].areaList;
+				//alert(city[i].name);
+        var text=$(this).text();
+        if(text!=$("#city").val()){
+            $("#city").val(text);
+ 
+            //$("#c2").hide();
+            $("#c3").empty();
+            $li3="";
+            $.each(area,function(i,val){
+                $li3+="<li>"+val+"</li>"
+            });
+            $("#c3").append($($li3));
+            $("#c3").show();
+            $("#city").trigger("change");
+        }else{
+            $("#c2").hide();
+        }
+    });
+    $("#c3").on("click","li",function(){			 
+        var text=$(this).text();
+        $("#area").val(text);
+        $("#c2,#c3").hide();				
+				//alert(text);
+    });
+</script>
+
+</html>
